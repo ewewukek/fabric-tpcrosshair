@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "tpcrosshair",
+  "version": "${version}",
+  "name": "Third Person Crosshair",
+  "description": "Enables crosshair in third-person view",
+  "authors": [
+    "ewewukek"
+  ],
+  "license": "MIT",
+  "environment": "client",
+  "mixins": [
+    "tpcrosshair.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.7.4",
+    "fabric": "*",
+    "minecraft": "1.16.x"
+  }
+}
