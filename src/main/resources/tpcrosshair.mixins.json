@@ -4,7 +4,8 @@
   "package": "ewewukek.tpc.mixin",
   "compatibilityLevel": "JAVA_8",
   "client": [
-    "MixinInGameHud"
+    "MixinInGameHud",
+    "InGameHudAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
