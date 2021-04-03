@@ -49,7 +49,7 @@ public class MixinInGameHud {
 
             if (bowReady) { // small tick under main crosshair
                 int k = acc.getScaledWidth() / 2 - 2;
-                int j = acc.getScaledHeight() / 2 + 7;
+                int j = acc.getScaledHeight() / 2 + 6;
                 hud.drawTexture(matrices, k, j, 75, 98, 3, 3);
             }
         }
