@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.options.Perspective;
+import net.minecraft.client.option.Perspective;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
@@ -17,7 +17,7 @@ import net.minecraft.item.Items;
 public class MixinInGameHud {
     @Redirect(
         method = "renderCrosshair(Lnet/minecraft/client/util/math/MatrixStack;)V",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/options/Perspective;isFirstPerson()Z")
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/Perspective;isFirstPerson()Z")
     )
     private boolean doRenderCrosshair(Perspective perspective) {
         return !perspective.isFrontView();
