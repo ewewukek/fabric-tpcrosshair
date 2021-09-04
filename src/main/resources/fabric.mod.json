@@ -4,6 +4,7 @@
   "version": "${version}",
   "name": "Third Person Crosshair",
   "description": "Enables crosshair in third-person view",
+  "icon": "assets/tpcrosshair/icon.png",
   "authors": [
     "ewewukek"
   ],
