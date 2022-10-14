@@ -14,8 +14,8 @@
     "tpcrosshair.mixins.json"
   ],
   "depends": {
-    "minecraft": "1.18.x",
+    "minecraft": "~1.18.2",
     "java": ">=17",
-    "fabricloader": ">=0.11.3"
+    "fabricloader": ">=0.14.6"
   }
 }
