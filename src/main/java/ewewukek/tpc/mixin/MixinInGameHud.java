@@ -13,6 +13,7 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.TridentItem;
 
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
@@ -43,19 +44,27 @@ public class MixinInGameHud {
         hud.drawTexture(matrices, dst_x, dst_y, src_x, src_y, w, h);
 
         if (src_x == 0 && src_y == 0) { // main crosshair
-            boolean bowReady = false;
+            boolean weaponReady = false;
 
             MinecraftClient client = hud.client;
             ClientPlayerEntity player = client.player;
             ItemStack itemStack = player.getActiveItem();
-            if (player.isUsingItem() && itemStack.getItem() == Items.BOW) {
-                int ticksInUse = Items.BOW.getMaxUseTime(itemStack) - player.getItemUseTimeLeft();
-                if (BowItem.getPullProgress(ticksInUse) == 1.0F ) {
-                    bowReady = true;
+            if (player.isUsingItem()) {
+                if (Config.enableBowDrawIndicator && itemStack.getItem() == Items.BOW) {
+                    int ticksInUse = Items.BOW.getMaxUseTime(itemStack) - player.getItemUseTimeLeft();
+                    if (BowItem.getPullProgress(ticksInUse) == 1.0F ) {
+                        weaponReady = true;
+                    }
+                }
+                if (Config.enableTridentChargeIndicator && itemStack.getItem() == Items.TRIDENT) {
+                    int ticksInUse = Items.TRIDENT.getMaxUseTime(itemStack) - player.getItemUseTimeLeft();
+                    if (ticksInUse >= TridentItem.field_30926) {
+                        weaponReady = true;
+                    }
                 }
             }
 
-            if (Config.enableBowDrawIndicator && bowReady) { // small tick under main crosshair
+            if (weaponReady) { // small tick under main crosshair
                 int k = hud.scaledWidth / 2 - 2;
                 int j = hud.scaledHeight / 2 + 6;
                 hud.drawTexture(matrices, k, j, 75, 98, 3, 3);

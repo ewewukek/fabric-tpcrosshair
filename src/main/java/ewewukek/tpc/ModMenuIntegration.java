@@ -37,6 +37,12 @@ public class ModMenuIntegration implements ModMenuApi {
                 .setDefaultValue(Config.ENABLE_BOW_DRAW_INDICATOR)
                 .build());
 
+            category.addEntry(entryBuilder.startBooleanToggle(
+                Text.translatable("tpcrosshair.options.enable_trident_charge_indicator"), Config.enableTridentChargeIndicator)
+                .setSaveConsumer(value -> Config.enableTridentChargeIndicator = value)
+                .setDefaultValue(Config.ENABLE_TRIDENT_CHARGE_INDICATOR)
+                .build());
+
             builder.setSavingRunnable(() -> {
                 Config.save();
             });

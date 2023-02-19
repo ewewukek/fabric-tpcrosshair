@@ -26,10 +26,14 @@ public class Config {
     public static boolean enableBowDrawIndicator;
     public static final boolean ENABLE_BOW_DRAW_INDICATOR = true;
 
+    public static boolean enableTridentChargeIndicator;
+    public static final boolean ENABLE_TRIDENT_CHARGE_INDICATOR = true;
+
     public static void setDefaults() {
         enableIn3rdPerson = ENABLE_IN_3RD_PERSON;
         enableIn3rdPersonFront = ENABLE_IN_3RD_PERSON_FRONT;
         enableBowDrawIndicator = ENABLE_BOW_DRAW_INDICATOR;
+        enableTridentChargeIndicator = ENABLE_TRIDENT_CHARGE_INDICATOR;
     }
 
     public static void load() {
@@ -65,6 +69,9 @@ public class Config {
                     case "enableBowDrawIndicator":
                         enableBowDrawIndicator = Boolean.parseBoolean(value);
                         break;
+                    case "enableTridentChargeIndicator":
+                        enableTridentChargeIndicator = Boolean.parseBoolean(value);
+                        break;
                     default:
                         throw new IOException("unrecognized field: " + key);
                     }
@@ -84,6 +91,7 @@ public class Config {
             writer.write("enableIn3rdPerson = " + enableIn3rdPerson + "\n");
             writer.write("enableIn3rdPersonFront = " + enableIn3rdPersonFront + "\n");
             writer.write("enableBowDrawIndicator = " + enableBowDrawIndicator + "\n");
+            writer.write("enableTridentChargeIndicator = " + enableTridentChargeIndicator + "\n");
 
         } catch (IOException e) {
             logger.warn("Could not save configuration file: ", e);
