@@ -1,7 +1,7 @@
 ### Third Person Crosshair
 
-A small Minecraft mod that enables crosshair in third-person view. Requires Fabric Loader.
+A small Minecraft mod that enables crosshair in third-person view. [Download from CurseForge](https://www.curseforge.com/minecraft/mc-mods/third-person-crosshair-fabric/files/all)
 
-Also adds a small bow draw indicator as a bonus feature.
+Requires [Cloth Config](https://www.curseforge.com/minecraft/mc-mods/cloth-config) and [Mod Menu](https://www.curseforge.com/minecraft/mc-mods/modmenu).
 
-[Download from CurseForge](https://www.curseforge.com/minecraft/mc-mods/third-person-crosshair-fabric/files/all)
+Also adds a small bow draw and trident charge indicator as a bonus feature.
