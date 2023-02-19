@@ -26,6 +26,12 @@ public class ModMenuIntegration implements ModMenuApi {
                 .build());
 
             category.addEntry(entryBuilder.startBooleanToggle(
+                Text.translatable("tpcrosshair.options.enable_in_3rd_person_front"), Config.enableIn3rdPersonFront)
+                .setSaveConsumer(value -> Config.enableIn3rdPersonFront = value)
+                .setDefaultValue(Config.ENABLE_IN_3RD_PERSON_FRONT)
+                .build());
+
+            category.addEntry(entryBuilder.startBooleanToggle(
                 Text.translatable("tpcrosshair.options.enable_bow_draw_indicator"), Config.enableBowDrawIndicator)
                 .setSaveConsumer(value -> Config.enableBowDrawIndicator = value)
                 .setDefaultValue(Config.ENABLE_BOW_DRAW_INDICATOR)

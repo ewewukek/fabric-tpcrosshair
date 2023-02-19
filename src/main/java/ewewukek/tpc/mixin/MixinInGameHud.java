@@ -25,7 +25,7 @@ public class MixinInGameHud {
             return true;
         } else {
             if (perspective.isFrontView()) {
-                return false;
+                return Config.enableIn3rdPersonFront;
             } else {
                 return Config.enableIn3rdPerson;
             }

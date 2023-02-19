@@ -20,11 +20,15 @@ public class Config {
     public static boolean enableIn3rdPerson;
     public static final boolean ENABLE_IN_3RD_PERSON = true;
 
+    public static boolean enableIn3rdPersonFront;
+    public static final boolean ENABLE_IN_3RD_PERSON_FRONT = false;
+
     public static boolean enableBowDrawIndicator;
     public static final boolean ENABLE_BOW_DRAW_INDICATOR = true;
 
     public static void setDefaults() {
         enableIn3rdPerson = ENABLE_IN_3RD_PERSON;
+        enableIn3rdPersonFront = ENABLE_IN_3RD_PERSON_FRONT;
         enableBowDrawIndicator = ENABLE_BOW_DRAW_INDICATOR;
     }
 
@@ -55,6 +59,9 @@ public class Config {
                     case "enableIn3rdPerson":
                         enableIn3rdPerson = Boolean.parseBoolean(value);
                         break;
+                    case "enableIn3rdPersonFront":
+                        enableIn3rdPersonFront = Boolean.parseBoolean(value);
+                        break;
                     case "enableBowDrawIndicator":
                         enableBowDrawIndicator = Boolean.parseBoolean(value);
                         break;
@@ -75,6 +82,7 @@ public class Config {
         try (BufferedWriter writer = Files.newBufferedWriter(path)) {
             writer.write("version = 1\n");
             writer.write("enableIn3rdPerson = " + enableIn3rdPerson + "\n");
+            writer.write("enableIn3rdPersonFront = " + enableIn3rdPersonFront + "\n");
             writer.write("enableBowDrawIndicator = " + enableBowDrawIndicator + "\n");
 
         } catch (IOException e) {
