@@ -34,10 +34,9 @@ public class MixinInGameHud {
         hud.drawTexture(matrices, dst_x, dst_y, src_x, src_y, w, h);
 
         if (src_x == 0 && src_y == 0) { // main crosshair
-            InGameHudAccessor acc = (InGameHudAccessor)hud;
             boolean bowReady = false;
 
-            MinecraftClient client = acc.getClient();
+            MinecraftClient client = hud.client;
             ClientPlayerEntity player = client.player;
             ItemStack itemStack = player.getActiveItem();
             if (player.isUsingItem() && itemStack.getItem() == Items.BOW) {
@@ -48,8 +47,8 @@ public class MixinInGameHud {
             }
 
             if (bowReady) { // small tick under main crosshair
-                int k = acc.getScaledWidth() / 2 - 2;
-                int j = acc.getScaledHeight() / 2 + 6;
+                int k = hud.scaledWidth / 2 - 2;
+                int j = hud.scaledHeight / 2 + 6;
                 hud.drawTexture(matrices, k, j, 75, 98, 3, 3);
             }
         }

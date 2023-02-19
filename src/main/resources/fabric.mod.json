@@ -10,6 +10,7 @@
   ],
   "license": "MIT",
   "environment": "client",
+  "accessWidener": "tpcrosshair.aw",
   "mixins": [
     "tpcrosshair.mixins.json"
   ],

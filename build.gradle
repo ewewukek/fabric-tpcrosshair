@@ -15,6 +15,10 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 }
 
+loom {
+	accessWidenerPath = file("src/main/resources/tpcrosshair.aw")
+}
+
 processResources {
     inputs.property "version", project.version
 
