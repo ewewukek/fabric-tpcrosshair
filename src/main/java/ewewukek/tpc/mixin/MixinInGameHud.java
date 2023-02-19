@@ -4,6 +4,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+import ewewukek.tpc.Config;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.network.ClientPlayerEntity;
@@ -20,7 +21,15 @@ public class MixinInGameHud {
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/Perspective;isFirstPerson()Z")
     )
     private boolean doRenderCrosshair(Perspective perspective) {
-        return !perspective.isFrontView();
+        if (perspective.isFirstPerson()) {
+            return true;
+        } else {
+            if (perspective.isFrontView()) {
+                return false;
+            } else {
+                return Config.enableIn3rdPerson;
+            }
+        }
     }
 
     @Redirect(
@@ -46,7 +55,7 @@ public class MixinInGameHud {
                 }
             }
 
-            if (bowReady) { // small tick under main crosshair
+            if (Config.enableBowDrawIndicator && bowReady) { // small tick under main crosshair
                 int k = hud.scaledWidth / 2 - 2;
                 int j = hud.scaledHeight / 2 + 6;
                 hud.drawTexture(matrices, k, j, 75, 98, 3, 3);
