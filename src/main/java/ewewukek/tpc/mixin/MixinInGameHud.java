@@ -37,11 +37,13 @@ public class MixinInGameHud {
         method = "renderCrosshair(Lnet/minecraft/client/util/math/MatrixStack;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;drawTexture(Lnet/minecraft/client/util/math/MatrixStack;IIIIII)V")
     )
-    private void drawTexture(InGameHud hud, MatrixStack matrices, int dst_x, int dst_y, int src_x, int src_y, int w, int h) {
+    private void drawTexture(MatrixStack matrices, int dst_x, int dst_y, int src_x, int src_y, int w, int h) {
+        InGameHud hud = (InGameHud)(Object)this;
+
         if (src_y == 94) {
             dst_x -= 1; // fix indicator position
         }
-        hud.drawTexture(matrices, dst_x, dst_y, src_x, src_y, w, h);
+        InGameHud.drawTexture(matrices, dst_x, dst_y, src_x, src_y, w, h);
 
         if (src_x == 0 && src_y == 0) { // main crosshair
             boolean weaponReady = false;
@@ -67,7 +69,7 @@ public class MixinInGameHud {
             if (weaponReady) { // small tick under main crosshair
                 int k = hud.scaledWidth / 2 - 2;
                 int j = hud.scaledHeight / 2 + 6;
-                hud.drawTexture(matrices, k, j, 75, 98, 3, 3);
+                InGameHud.drawTexture(matrices, k, j, 75, 98, 3, 3);
             }
         }
     }
