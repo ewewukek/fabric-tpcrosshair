@@ -18,6 +18,8 @@ import net.minecraft.util.Identifier;
 
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
+    private static final Identifier CROSSHAIR_BOW_DRAWN = new Identifier("tpcrosshair", "hud/crosshair_bow_drawn");
+
     @Redirect(
         method = "renderCrosshair(Lnet/minecraft/client/gui/DrawContext;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/Perspective;isFirstPerson()Z")
@@ -36,17 +38,14 @@ public class MixinInGameHud {
 
     @Redirect(
         method = "renderCrosshair(Lnet/minecraft/client/gui/DrawContext;)V",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawTexture(Lnet/minecraft/util/Identifier;IIIIII)V")
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V")
     )
-    private void drawTexture(DrawContext context, Identifier textureId, int dst_x, int dst_y, int src_x, int src_y, int w, int h) {
+    private void drawGuiTexture(DrawContext context, Identifier texture, int x, int y, int w, int h) {
         InGameHud hud = (InGameHud)(Object)this;
 
-        if (src_y == 94) {
-            dst_x -= 1; // fix indicator position
-        }
-        context.drawTexture(textureId, dst_x, dst_y, src_x, src_y, w, h);
+        context.drawGuiTexture(texture, x, y, w, h);
 
-        if (src_x == 0 && src_y == 0) { // main crosshair
+        if (texture == InGameHud.CROSSHAIR_TEXTURE) {
             boolean weaponReady = false;
 
             MinecraftClient client = hud.client;
@@ -55,7 +54,7 @@ public class MixinInGameHud {
             if (player.isUsingItem()) {
                 if (Config.enableBowDrawIndicator && itemStack.getItem() == Items.BOW) {
                     int ticksInUse = Items.BOW.getMaxUseTime(itemStack) - player.getItemUseTimeLeft();
-                    if (BowItem.getPullProgress(ticksInUse) == 1.0F ) {
+                    if (BowItem.getPullProgress(ticksInUse) == 1.0F) {
                         weaponReady = true;
                     }
                 }
@@ -68,9 +67,9 @@ public class MixinInGameHud {
             }
 
             if (weaponReady) { // small tick under main crosshair
-                int k = hud.scaledWidth / 2 - 2;
-                int j = hud.scaledHeight / 2 + 6;
-                context.drawTexture(textureId, k, j, 75, 98, 3, 3);
+                int k = hud.scaledWidth / 2 - 3;
+                int j = hud.scaledHeight / 2 + 5;
+                context.drawGuiTexture(CROSSHAIR_BOW_DRAWN, k, j, 5, 5);
             }
         }
     }
