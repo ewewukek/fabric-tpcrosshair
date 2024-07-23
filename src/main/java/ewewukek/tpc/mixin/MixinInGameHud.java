@@ -17,10 +17,10 @@ import net.minecraft.util.Identifier;
 
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
-    private static final Identifier CROSSHAIR_BOW_DRAWN = new Identifier("tpcrosshair", "hud/crosshair_bow_drawn");
+    private static final Identifier CROSSHAIR_BOW_DRAWN = Identifier.of("tpcrosshair", "hud/crosshair_bow_drawn");
 
     @Redirect(
-        method = "renderCrosshair(Lnet/minecraft/client/gui/DrawContext;F)V",
+        method = "renderCrosshair(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/Perspective;isFirstPerson()Z")
     )
     private boolean doRenderCrosshair(Perspective perspective) {
@@ -36,7 +36,7 @@ public class MixinInGameHud {
     }
 
     @Redirect(
-        method = "renderCrosshair(Lnet/minecraft/client/gui/DrawContext;F)V",
+        method = "renderCrosshair(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V",
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V")
     )
     private void drawGuiTexture(DrawContext context, Identifier texture, int x, int y, int w, int h) {
@@ -52,13 +52,13 @@ public class MixinInGameHud {
             ItemStack itemStack = player.getActiveItem();
             if (player.isUsingItem()) {
                 if (Config.enableBowDrawIndicator && itemStack.getItem() == Items.BOW) {
-                    int ticksInUse = Items.BOW.getMaxUseTime(itemStack) - player.getItemUseTimeLeft();
+                    int ticksInUse = Items.BOW.getMaxUseTime(itemStack, player) - player.getItemUseTimeLeft();
                     if (BowItem.getPullProgress(ticksInUse) == 1.0F) {
                         weaponReady = true;
                     }
                 }
                 if (Config.enableTridentChargeIndicator && itemStack.getItem() == Items.TRIDENT) {
-                    int ticksInUse = Items.TRIDENT.getMaxUseTime(itemStack) - player.getItemUseTimeLeft();
+                    int ticksInUse = Items.TRIDENT.getMaxUseTime(itemStack, player) - player.getItemUseTimeLeft();
                     if (ticksInUse >= 10) {
                         weaponReady = true;
                     }
