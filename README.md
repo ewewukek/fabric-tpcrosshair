@@ -1,3 +1,5 @@
+### Third Person Crosshair
+
 Fabric mod that enables crosshair in third-person view.
 
 [Download from CurseForge](https://www.curseforge.com/minecraft/mc-mods/third-person-crosshair-fabric/files/all)\
