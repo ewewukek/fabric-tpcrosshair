@@ -1,5 +1,8 @@
 package ewewukek.tpc.mixin;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import java.util.function.Function;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -14,6 +17,7 @@ import net.minecraft.item.BowItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.util.Identifier;
+import net.minecraft.client.render.RenderLayer;
 
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
@@ -37,12 +41,12 @@ public class MixinInGameHud {
 
     @Redirect(
         method = "renderCrosshair(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V")
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/util/Identifier;IIII)V")
     )
-    private void drawGuiTexture(DrawContext context, Identifier texture, int x, int y, int w, int h) {
+    private void drawGuiTexture(DrawContext context, RenderPipeline pipeline, Identifier texture, int x, int y, int w, int h) {
         InGameHud hud = (InGameHud)(Object)this;
 
-        context.drawGuiTexture(texture, x, y, w, h);
+        context.drawGuiTexture(pipeline, texture, x, y, w, h);
 
         if (texture == InGameHud.CROSSHAIR_TEXTURE) {
             boolean weaponReady = false;
@@ -68,7 +72,7 @@ public class MixinInGameHud {
             if (weaponReady) { // small tick under main crosshair
                 int k = context.getScaledWindowWidth() / 2 - 3;
                 int j = context.getScaledWindowHeight() / 2 + 5;
-                context.drawGuiTexture(CROSSHAIR_BOW_DRAWN, k, j, 5, 5);
+                context.drawGuiTexture(pipeline, CROSSHAIR_BOW_DRAWN, k, j, 5, 5);
             }
         }
     }
