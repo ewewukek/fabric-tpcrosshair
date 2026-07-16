@@ -5,29 +5,33 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import ewewukek.tpc.Config;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.hud.InGameHud;
-import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.option.Perspective;
-import net.minecraft.item.BowItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.util.Identifier;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 
-@Mixin(InGameHud.class)
+import net.minecraft.client.CameraType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.item.BowItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+
+@Mixin(Gui.class)
 public class MixinInGameHud {
-    private static final Identifier CROSSHAIR_BOW_DRAWN = Identifier.of("tpcrosshair", "hud/crosshair_bow_drawn");
+    private static final Identifier CROSSHAIR_BOW_DRAWN = Identifier.fromNamespaceAndPath("tpcrosshair", "hud/crosshair_bow_drawn");
+    private static final Identifier CROSSHAIR_SPRITE = Identifier.withDefaultNamespace("hud/crosshair");
 
     @Redirect(
-        method = "renderCrosshair(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/Perspective;isFirstPerson()Z")
+        method = "extractCrosshair(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V",
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/CameraType;isFirstPerson()Z")
     )
-    private boolean doRenderCrosshair(Perspective perspective) {
-        if (perspective.isFirstPerson()) {
+    private boolean doRenderCrosshair(CameraType cameraType) {
+        if (cameraType.isFirstPerson()) {
             return true;
         } else {
-            if (perspective.isFrontView()) {
+            if (cameraType == CameraType.THIRD_PERSON_FRONT) {
                 return Config.enableIn3rdPersonFront;
             } else {
                 return Config.enableIn3rdPerson;
@@ -36,29 +40,29 @@ public class MixinInGameHud {
     }
 
     @Redirect(
-        method = "renderCrosshair(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/render/RenderTickCounter;)V",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/DrawContext;drawGuiTexture(Lnet/minecraft/util/Identifier;IIII)V")
+        method = "extractCrosshair(Lnet/minecraft/client/gui/GuiGraphicsExtractor;Lnet/minecraft/client/DeltaTracker;)V",
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;blitSprite(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIII)V")
     )
-    private void drawGuiTexture(DrawContext context, Identifier texture, int x, int y, int w, int h) {
-        InGameHud hud = (InGameHud)(Object)this;
+    private void drawGuiTexture(GuiGraphicsExtractor context, RenderPipeline pipeline, Identifier texture, int x, int y, int w, int h) {
+        Gui gui = (Gui)(Object)this;
 
-        context.drawGuiTexture(texture, x, y, w, h);
+        context.blitSprite(pipeline, texture, x, y, w, h);
 
-        if (texture == InGameHud.CROSSHAIR_TEXTURE) {
+        if (texture.equals(CROSSHAIR_SPRITE)) {
             boolean weaponReady = false;
 
-            MinecraftClient client = hud.client;
-            ClientPlayerEntity player = client.player;
+            Minecraft client = gui.minecraft;
+            LocalPlayer player = client.player;
             ItemStack itemStack = player.getActiveItem();
             if (player.isUsingItem()) {
                 if (Config.enableBowDrawIndicator && itemStack.getItem() == Items.BOW) {
-                    int ticksInUse = Items.BOW.getMaxUseTime(itemStack, player) - player.getItemUseTimeLeft();
-                    if (BowItem.getPullProgress(ticksInUse) == 1.0F) {
+                    int ticksInUse = Items.BOW.getUseDuration(itemStack, player) - player.getUseItemRemainingTicks();
+                    if (BowItem.getPowerForTime(ticksInUse) == 1.0F) {
                         weaponReady = true;
                     }
                 }
                 if (Config.enableTridentChargeIndicator && itemStack.getItem() == Items.TRIDENT) {
-                    int ticksInUse = Items.TRIDENT.getMaxUseTime(itemStack, player) - player.getItemUseTimeLeft();
+                    int ticksInUse = Items.TRIDENT.getUseDuration(itemStack, player) - player.getUseItemRemainingTicks();
                     if (ticksInUse >= 10) {
                         weaponReady = true;
                     }
@@ -66,9 +70,9 @@ public class MixinInGameHud {
             }
 
             if (weaponReady) { // small tick under main crosshair
-                int k = context.getScaledWindowWidth() / 2 - 3;
-                int j = context.getScaledWindowHeight() / 2 + 5;
-                context.drawGuiTexture(CROSSHAIR_BOW_DRAWN, k, j, 5, 5);
+                int k = context.guiWidth() / 2 - 3;
+                int j = context.guiHeight() / 2 + 5;
+                context.blitSprite(RenderPipelines.CROSSHAIR, CROSSHAIR_BOW_DRAWN, k, j, 5, 5);
             }
         }
     }
